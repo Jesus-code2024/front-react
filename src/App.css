@@ -1,0 +1,229 @@
+/* src/index.css (parte superior del archivo) */
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* --- Estilos para la página de autenticación (AuthPage.jsx) --- */
+
+.auth-page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  background-image: url('./assets/events.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+}
+
+
+/* Nueva clase para el Navbar personalizado */
+.auth-header-custom {
+  background-color: black;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 4px 25px; 
+  height: 150px;
+}
+
+
+
+.auth-content {
+ flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  max-width: 600px; 
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.auth-content .illustration { 
+  margin-bottom: 30px;
+}
+
+.auth-content .main-illustration { 
+  width: 500px; 
+  height: auto;
+  padding: 15px; 
+  border-radius: 15px; 
+  background-color: rgba(253, 253, 253, 0.596); 
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
+  box-sizing: border-box; 
+}
+
+
+.auth-content h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.auth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  max-width: 3500px; 
+}
+.header-logo-image {
+  height: 150px; /* Ajusta la altura deseada para el logo en el header */
+  width: auto; /* Mantiene la proporción de la imagen */
+  display: block; /* Para asegurarse que no haya espacio extra debajo de la imagen */
+}
+
+.social-button, .back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #333;
+  font-size: 25px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Nueva clase para hacer los botones más grandes */
+.large-social-button {
+  padding: 20px 20px; /* Aumenta el padding para hacerlos más grandes */
+  font-size: 39px; /* Aumenta el tamaño de fuente */
+  border-radius: 30px; /* Bordes más redondeados si lo deseas */
+}
+
+.social-button:hover, .back-button:hover {
+  background-color: #f0f0f0;
+  border-color: #ccc;
+}
+
+.social-button .icon {
+  margin-right: 10px;
+  font-size: 40px; /* Haz los íconos un poco más grandes también */
+}
+
+.google-button .icon {
+  color: #c4da05;
+}
+
+.email-button .icon {
+  color: #eb0c0c;
+}
+
+.back-button {
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 350px; /* Ajusta este ancho para que coincida con los botones sociales */
+  align-self: center;
+}
+
+/* --- Estilos para el formulario de email/contraseña (EmailLoginForm.jsx) --- */
+
+.email-login-form-container {
+  width: 100%;
+  max-width: 350px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.email-login-form-container h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.email-login-form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.email-login-form-container input {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.email-login-form-container button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s ease;
+}
+
+.email-login-form-container button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* --- Estilos para el formulario de email/contraseña (EmailLoginForm.jsx) --- */
+
+.email-login-form-container {
+  width: 150%;
+  max-width: 4500px; 
+  background-color: white;
+  padding: 45px; 
+  border-radius: 15px; 
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+.email-login-form-container h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 28px; 
+}
+
+.email-login-form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* **VALOR GRANDE** */
+}
+
+.email-login-form-container input {
+    padding: 15px 20px; /* **VALORES GRANDES** */
+    border: 1px solid #ccc; /* Borde un poco más visible */
+    border-radius: 10px; /* Más redondeado */
+    font-size: 18px; /* **VALOR GRANDE** */
+}
+
+.email-login-form-container button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 15px 25px; 
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 20px; 
+    transition: background-color 0.2s ease;
+}
+
+.email-login-form-container button[type="submit"]:hover {
+    background-color: #0056b3;
+}

@@ -1,0 +1,16 @@
+/* src/index.css */
+
+/* ... (mantén todo el CSS anterior para AuthPage y PublicationsPage) ... */
+
+/* Estilos para el Navbar principal de la aplicación (después del login) */
+.main-app-header-custom {
+    background-color: white !important; /* Fondo blanco para el navbar principal */
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 8px 25px;
+    position: sticky; /* O fixed si quieres que siempre esté visible al hacer scroll */
+    top: 0;
+    width: 100%;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+/* El .header-logo-image ya está definido, se reutiliza */
