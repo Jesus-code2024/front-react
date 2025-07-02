@@ -21,7 +21,8 @@ import WebinarsPage from './components/WebinarPage';
 import CreateEventoPage from './components/CreateEventoPage';
 import EditEventoPage from './components/EditEventoPage';
 import CreateWebinarPage from './components/CreateWebinarPage';
-import EditWebinarPage from './components/EditWebinarPage'; 
+import EditWebinarPage from './components/EditWebinarPage';
+import Footer from './components/Footer'; 
 
 
 const OAuth2RedirectHandler = () => {
@@ -63,7 +64,11 @@ const ProtectedRoute = () => {
   return isAuthenticated ? (
     <>
       <MainNavbar />
-      <Outlet />
+      {/* Contenedor para el contenido principal y para empujar el footer hacia abajo */}
+      <div className="main-content" style={{ minHeight: 'calc(100vh - 120px)' }}> {/* Ajusta 120px a la altura combinada de tu navbar y footer */}
+        <Outlet />
+      </div>
+      <Footer /> {/* <-- Mueve el Footer aquí dentro de ProtectedRoute */}
     </>
   ) : (
     <Navigate to="/login" replace />
