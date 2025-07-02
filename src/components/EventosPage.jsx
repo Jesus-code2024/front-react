@@ -51,11 +51,11 @@ function EventosPage() {
     }, []);
 
     const handleCreateEventClick = () => {
-        navigate('/evento/new'); // Asegúrate de que esta ruta coincida con tu App.js
+        navigate('/evento/new'); 
     };
 
     const handleEditClick = (id) => {
-        navigate(`/edit-evento/${id}`); // Asegúrate de que esta ruta coincida con tu App.js
+        navigate(`/edit-evento/${id}`); 
     };
 
     const handleDeleteClick = async (id) => {

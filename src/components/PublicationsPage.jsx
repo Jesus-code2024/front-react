@@ -23,17 +23,14 @@ function PublicationsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-    // Ajusta los eventKey para que coincidan con las constantes de tu enum TipoAnuncio en Java
-    const [activeTab, setActiveTab] = useState('all'); // 'all', 'GEN', 'CAR', 'DEP', etc.
+    const [activeTab, setActiveTab] = useState('all'); 
     const navigate = useNavigate();
 
-    // Función para obtener los headers de autorización
     const getAuthHeaders = () => {
-        const token = localStorage.getItem('jwtToken'); // Asume que el token se guarda aquí en el login
+        const token = localStorage.getItem('jwtToken'); 
         return token ? { Authorization: `Bearer ${token}` } : {};
     };
 
-    // Función para mapear el enum del backend a un string legible
     const mapTipoAnuncioToDisplay = (tipoEnum) => {
         switch (tipoEnum) {
             case 'GEN':
@@ -42,11 +39,8 @@ function PublicationsPage() {
                 return 'Carrera';
             case 'DEP':
                 return 'Departamento';
-            // Si tu enum TipoAnuncio en Java tiene otras constantes como EVENTO o WEBINAR
-            // case 'EVENTO': return 'Evento';
-            // case 'WEBINAR': return 'Webinar';
             default:
-                return tipoEnum; // Devuelve el enum tal cual si no hay mapeo
+                return tipoEnum; 
         }
     };
 
@@ -82,15 +76,13 @@ function PublicationsPage() {
     };
 
     useEffect(() => {
-        fetchPublications(activeTab); // Cargar publicaciones al montar y al cambiar la pestaña
-    }, [activeTab]); // Dependencia: re-ejecutar cuando cambia la pestaña
-
+        fetchPublications(activeTab); 
+    }, [activeTab]); 
     // Manejador del cambio de pestaña
     const handleTabSelect = (selectedKey) => {
         setActiveTab(selectedKey);
     };
 
-    // Filtrado en el frontend (puedes moverlo al backend si prefieres para datasets grandes)
     const filteredPublications = publications.filter(pub =>
         pub.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (pub.contenido && pub.contenido.toLowerCase().includes(searchTerm.toLowerCase())) || // Usar 'contenido'
@@ -99,27 +91,25 @@ function PublicationsPage() {
             (pub.autor.lastName && pub.autor.lastName.toLowerCase().includes(searchTerm.toLowerCase())) ||
             (pub.autor.username && pub.autor.username.toLowerCase().includes(searchTerm.toLowerCase())) ||
             (pub.autor.email && pub.autor.email.toLowerCase().includes(searchTerm.toLowerCase()))
-        )) // <-- Fin de la corrección para la búsqueda del autor
-        // Agrega más campos si es necesario
+        )) 
     );
 
-    // Funciones de acción (solo ejemplos, debes implementar la lógica real con tu backend)
     const handleCreatePublication = () => {
         console.log('Navegar a la página de creación de publicación');
-        navigate('/publications/new'); // Por ejemplo, una nueva ruta para crear
+        navigate('/publications/new'); 
     };
 
     const handleEditPublication = (id) => {
         console.log('Editar publicación con ID:', id);
-        navigate(`/publications/edit/${id}`); // Por ejemplo, una nueva ruta para editar
+        navigate(`/publications/edit/${id}`); 
     };
 
     const handleDeletePublication = async (id) => {
         if (window.confirm('¿Estás seguro de que quieres eliminar esta publicación?')) {
             try {
-                await axios.delete(`${API_URL_PUBLICACIONES}/${id}`, { headers: getAuthHeaders() }); // Endpoint de eliminación en Spring Boot
+                await axios.delete(`${API_URL_PUBLICACIONES}/${id}`, { headers: getAuthHeaders() }); 
                 console.log('Publicación eliminada con ID:', id);
-                fetchPublications(activeTab); // Recargar la lista después de eliminar
+                fetchPublications(activeTab); 
             } catch (err) {
                 console.error('Error al eliminar publicación:', err);
                 setError('No se pudo eliminar la publicación.');
@@ -129,7 +119,6 @@ function PublicationsPage() {
                 } else if (err.response && err.response.status === 403) {
                     setError('No tienes permiso para eliminar esta publicación.');
                 } else if (err.response && err.response.status === 400 && err.response.data.includes("No tienes permiso para eliminar este anuncio")) {
-                    // Esto es si tu backend devuelve "No tienes permiso para eliminar este anuncio" con 400
                     setError(err.response.data);
                 }
             }
@@ -140,7 +129,6 @@ function PublicationsPage() {
     if (error) return <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>;
 
     return (
-        // publications-page-container es el contenedor principal para esta página
         <Container fluid className="publications-page-container mt-4">
             <Row className="mb-4 align-items-center">
                 <Col md={6}>
@@ -155,23 +143,20 @@ function PublicationsPage() {
 
             <Row className="mb-4">
                 <Col md={8}>
-                    {/* Pestañas de Navegación/Filtro. Los eventKey deben coincidir con tus enums de Java */}
                     <Nav variant="tabs" defaultActiveKey="all" onSelect={handleTabSelect}>
                         <Nav.Item>
                             <Nav.Link eventKey="all">Todos</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="GEN">Anuncios Generales</Nav.Link> {/* Usar el nombre de la constante del enum */}
+                            <Nav.Link eventKey="GEN">Anuncios Generales</Nav.Link> 
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="CAR">Anuncios de Carrera</Nav.Link> {/* Usar el nombre de la constante del enum */}
+                            <Nav.Link eventKey="CAR">Anuncios de Carrera</Nav.Link> 
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="DEP">Anuncios de Departamento</Nav.Link> {/* Usar el nombre de la constante del enum */}
+                            <Nav.Link eventKey="DEP">Anuncios de Departamento</Nav.Link> 
                         </Nav.Item>
-                        {/* Si tu enum TipoAnuncio en Java tiene otras constantes como EVENTO o WEBINAR, actívalas aquí */}
-                        {/* <Nav.Item><Nav.Link eventKey="EVENTO">Eventos</Nav.Link></Nav.Item> */}
-                        {/* <Nav.Item><Nav.Link eventKey="WEBINAR">Webinars</Nav.Link></Nav.Item> */}
+
                     </Nav>
                 </Col>
                 <Col md={4}>
@@ -216,11 +201,9 @@ function PublicationsPage() {
                                                     Ver
                                                 </Button>
                                             </td>
-                                            {/* LA CELDA DE LA FECHA DEBE ESTAR DENTRO DE <td> */}
                                             <td>
                                                 {pub.fechaPublicacion ? new Date(pub.fechaPublicacion).toLocaleDateString() : 'N/A'}
                                             </td> {/* 'fechaPublicacion' de tu backend */}
-                                            {/* LA CELDA DEL AUTOR YA ESTÁ BIEN DENTRO DE <td> */}
                                             <td>
                                                 {pub.autor ? 
                                                     (pub.autor.firstName && pub.autor.lastName ? 

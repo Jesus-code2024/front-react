@@ -11,23 +11,22 @@ const OAuth2RedirectHandler = () => {
         const error = queryParams.get('error'); 
 
         if (token) {
-            localStorage.setItem('jwtToken', token); // Manteniendo 'jwtToken' aquí
+            localStorage.setItem('jwtToken', token); 
             console.log('Autenticación Google exitosa. JWT recibido y guardado.'); // Añadido log para confirmar
-            navigate('/dashboard', { replace: true }); // <--- CAMBIO AQUÍ: Redirigir a /dashboard
+            navigate('/dashboard', { replace: true }); 
         } else if (error) {
             console.error('Autenticación Google fallida:', error);
             alert(`Error al iniciar sesión con Google: ${error}`); 
-            navigate('/login', { replace: true }); // Redirigir a /login en caso de error
+            navigate('/login', { replace: true }); 
         } else {
             console.warn('Redirección OAuth2 sin token ni error.');
-            navigate('/login', { replace: true }); // Redirigir a /login si no hay token ni error
+            navigate('/login', { replace: true }); 
         }
     }, [location, navigate]);
 
     return (
         <div style={{ padding: '20px', textAlign: 'center' }}>
             <p>Procesando inicio de sesión con Google...</p>
-            {/* Opcional: añadir un spinner de carga */}
         </div>
     );
 };

@@ -4,10 +4,9 @@ import axios from 'axios';
 import { Container, Row, Col, Carousel, Card, Spinner, Alert, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-// URL de tus APIs
 const API_URL_EVENTS = 'http://localhost:8080/api/eventos';
 const API_URL_WEBINARS = 'http://localhost:8080/api/webinars';
-const BASE_URL = 'http://localhost:8080'; // Asegúrate de que esta URL sea correcta para las imágenes
+const BASE_URL = 'http://localhost:8080';
 
 // Función de utilidad para manejar fechas (ya la tienes en WebinarsPage)
 const formatLocalDateTime = (dateTimeString) => {

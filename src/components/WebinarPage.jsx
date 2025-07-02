@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Table, Alert, InputGroup, FormControl, Button } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
 
-const API_URL_WEBINARS = 'http://localhost:8080/api/webinars'; // Asegúrate de que esta sea la URL correcta para tu API de webinars
-const BASE_URL = 'http://localhost:8080'; // Si tus webinars tienen imágenes, asegúrate de que BASE_URL sea correcto
+const API_URL_WEBINARS = 'http://localhost:8080/api/webinars'; 
+const BASE_URL = 'http://localhost:8080'; 
 
 const formatLocalDateTime = (dateTimeString) => {
     if (!dateTimeString) return 'N/A';
@@ -52,11 +52,11 @@ function WebinarsPage() {
     }, []);
 
     const handleCreateWebinarClick = () => {
-        navigate('/webinar/new'); // Ruta para crear un nuevo webinar
+        navigate('/webinar/new'); 
     };
 
     const handleEditClick = (id) => {
-        navigate(`/edit-webinar/${id}`); // Ruta para editar un webinar existente
+        navigate(`/edit-webinar/${id}`); 
     };
 
     const handleDeleteClick = async (id) => {
@@ -64,7 +64,7 @@ function WebinarsPage() {
             try {
                 await axios.delete(`${API_URL_WEBINARS}/${id}`, { headers: getAuthHeaders() });
                 alert('Webinar eliminado con éxito.');
-                fetchWebinars(); // Vuelve a cargar la lista de webinars después de eliminar
+                fetchWebinars(); 
             } catch (err) {
                 console.error('Error al eliminar el webinar:', err);
                 if (err.response && err.response.status === 403) {
@@ -127,8 +127,6 @@ function WebinarsPage() {
                                     <th>Expositor</th>
                                     <th>Enlace</th>
                                     <th>Autor</th>
-                                    {/* Si los webinars tienen imagen, agrega esta columna */}
-                                    {/* <th>Imagen</th> */}
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -147,20 +145,6 @@ function WebinarsPage() {
                                                 ) : 'N/A'}
                                             </td>
                                             <td>{webinar.autor ? webinar.autor.username : 'N/A'}</td>
-                                            {/* Si los webinars tienen imagen, descomenta y adapta esto */}
-                                            {/* <td>
-                                                {webinar.imagen ? (
-                                                    <img
-                                                        src={webinar.imagen.startsWith('http://') || webinar.imagen.startsWith('https://')
-                                                            ? webinar.imagen
-                                                            : `${BASE_URL}${webinar.imagen}`}
-                                                        alt={webinar.titulo || 'Imagen del webinar'}
-                                                        style={{ maxWidth: '100px', maxHeight: '100px', objectFit: 'cover' }}
-                                                    />
-                                                ) : (
-                                                    'No image'
-                                                )}
-                                            </td> */}
                                             <td>
                                                 <Button
                                                     variant="warning"
@@ -182,7 +166,7 @@ function WebinarsPage() {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="8" className="text-center">No se encontraron webinars.</td> {/* Ajusta colSpan si añades columna de imagen */}
+                                        <td colSpan="8" className="text-center">No se encontraron webinars.</td> 
                                     </tr>
                                 )}
                             </tbody>

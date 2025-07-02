@@ -3,7 +3,7 @@ import React from 'react';
 import { Container, Row, Col, Nav, Button } from 'react-bootstrap';
 import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa'; // Iconos de redes sociales
 import { useNavigate } from 'react-router-dom';
-import tecsupLogoFooter from '../assets/Logo-Header.png'; // Reusa el logo si es el mismo, o ten uno específico para el footer
+import tecsupLogoFooter from '../assets/Logo-Header.png'; 
 
 function Footer() {
     const navigate = useNavigate();
@@ -18,7 +18,7 @@ function Footer() {
                             src={tecsupLogoFooter}
                             alt="Tecsup Logo"
                             className="footer-logo-image mb-3"
-                            style={{ maxWidth: '150px' }} // Ajusta el tamaño del logo si es necesario
+                            style={{ maxWidth: '150px' }} 
                         />
                         <p className="footer-text-light">
                             © 2025 Tecsup. Todos los derechos reservados.
