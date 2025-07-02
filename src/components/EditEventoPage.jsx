@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom'; // Importa useParams
+import { useNavigate, useParams } from 'react-router-dom'; 
 import { Container, Form, Button, Alert, Row, Col } from 'react-bootstrap';
 
 const API_URL_EVENTOS = 'http://localhost:8080/api/eventos';
 const API_URL_UPLOAD = 'http://localhost:8080/api/upload';
-const API_URL_CARRERAS = 'http://localhost:8080/api/carreras'; // Asumo esta URL para carreras
-const API_URL_USUARIOS = 'http://localhost:8080/api/users'; // Asumo esta URL para usuarios
+const API_URL_CARRERAS = 'http://localhost:8080/api/carreras'; 
+const API_URL_USUARIOS = 'http://localhost:8080/api/users'; 
 
 function EditEventoPage() {
-    const { id } = useParams(); // Obtiene el ID del evento de la URL
+    const { id } = useParams(); 
     const navigate = useNavigate();
 
     const [evento, setEvento] = useState({
@@ -21,9 +21,9 @@ function EditEventoPage() {
         capacidad: '',
         carrera_id: '',
         autor_id: '',
-        imagen: '' // Para la URL de la imagen existente
+        imagen: ''
     });
-    const [selectedFile, setSelectedFile] = useState(null); // Para la nueva imagen a subir
+    const [selectedFile, setSelectedFile] = useState(null); 
     const [carreras, setCarreras] = useState([]);
     const [usuarios, setUsuarios] = useState([]); // Para la lista de usuarios/autores
     const [loading, setLoading] = useState(true);
@@ -39,22 +39,16 @@ function EditEventoPage() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                // Fetch Evento Data
                 const eventoResponse = await axios.get(`${API_URL_EVENTOS}/${id}`, { headers: getAuthHeaders() });
                 const fetchedEvento = eventoResponse.data;
 
-                // Formatear fechas para el input datetime-local
                 fetchedEvento.fecha_inicio = fetchedEvento.fechaInicio ? new Date(fetchedEvento.fechaInicio).toISOString().slice(0, 16) : '';
                 fetchedEvento.fecha_fin = fetchedEvento.fechaFin ? new Date(fetchedEvento.fechaFin).toISOString().slice(0, 16) : '';
                 
-                // Asegúrate de usar los nombres de propiedades correctos (fechaInicio, fechaFin si tu backend los devuelve así)
-                // O si tu backend devuelve fecha_inicio y fecha_fin, el formato original está bien.
-                // Ajustamos por si acaso para manejar ambos
                 fetchedEvento.fecha_inicio = fetchedEvento.fecha_inicio || (fetchedEvento.fechaInicio ? new Date(fetchedEvento.fechaInicio).toISOString().slice(0, 16) : '');
                 fetchedEvento.fecha_fin = fetchedEvento.fecha_fin || (fetchedEvento.fechaFin ? new Date(fetchedEvento.fechaFin).toISOString().slice(0, 16) : '');
 
 
-                // Asegúrate de que los IDs existan y sean números
                 fetchedEvento.carrera_id = fetchedEvento.carrera ? fetchedEvento.carrera.id : '';
                 fetchedEvento.autor_id = fetchedEvento.autor ? fetchedEvento.autor.id : '';
 
@@ -100,38 +94,32 @@ function EditEventoPage() {
         let imageUrl = evento.imagen; // Mantener la imagen existente por defecto
 
         try {
-            // Si hay un nuevo archivo seleccionado, subirlo primero
             if (selectedFile) {
                 const formData = new FormData();
                 formData.append('file', selectedFile);
                 const uploadResponse = await axios.post(API_URL_UPLOAD, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        ...getAuthHeaders() // Asegúrate de enviar los headers de auth también para la subida
+                        ...getAuthHeaders() 
                     },
                 });
-                imageUrl = uploadResponse.data.url; // Obtener la URL de la imagen subida
+                imageUrl = uploadResponse.data.url; 
                 console.log('Imagen subida exitosamente:', imageUrl);
             }
 
-            // Preparar los datos del evento para enviar
             const finalEventoData = {
                 ...evento,
                 imagen: imageUrl,
-                // Asegúrate de que los IDs sean números si tu backend los espera así
                 carrera_id: evento.carrera_id ? parseInt(evento.carrera_id) : null,
                 autor_id: evento.autor_id ? parseInt(evento.autor_id) : null,
-                // Asegúrate de que las fechas sean enviadas en el formato correcto (ISO string o lo que espere tu backend)
                 fecha_inicio: evento.fecha_inicio ? new Date(evento.fecha_inicio).toISOString() : null,
                 fecha_fin: evento.fecha_fin ? new Date(evento.fecha_fin).toISOString() : null
             };
 
-            // Eliminar campos que el backend no espera directamente en el objeto Evento
-            delete finalEventoData.carrera; // Si carrera_id ya es suficiente
-            delete finalEventoData.autor; // Si autor_id ya es suficiente
-            delete finalEventoData.id; // No envíes el ID en el cuerpo para un PUT
+            delete finalEventoData.carrera; 
+            delete finalEventoData.autor;
+            delete finalEventoData.id; 
 
-            // Enviar la solicitud de actualización
             const response = await axios.put(`${API_URL_EVENTOS}/${id}`, finalEventoData, { headers: getAuthHeaders() });
             setSuccessMessage('Evento actualizado exitosamente.');
             console.log('Evento actualizado:', response.data);

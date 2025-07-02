@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Aunque no se usará directamente para navegar a editar/crear, se mantiene si se usa para otras rutas de detalles
+import { useNavigate } from 'react-router-dom'; 
 import { Container, Row, Col, Table, Alert, InputGroup, FormControl } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
 
@@ -11,7 +11,7 @@ function CarrerasPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const navigate = useNavigate(); // Se mantiene para posible navegación a detalles si los implementas
+    const navigate = useNavigate(); 
 
     const getAuthHeaders = () => {
         const token = localStorage.getItem('jwtToken');

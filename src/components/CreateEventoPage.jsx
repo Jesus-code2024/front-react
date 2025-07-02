@@ -18,36 +18,23 @@ function CreateEventoPage() {
         autor_id: '', 
         carrera_id: '' 
     });
-    const [file, setFile] = useState(null); // Para el archivo de imagen
-    const [previewImage, setPreviewImage] = useState(null); // Para mostrar una vista previa de la imagen
+    const [file, setFile] = useState(null); 
+    const [previewImage, setPreviewImage] = useState(null); 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
-    const [carreras, setCarreras] = useState([]); // Para la lista desplegable de carreras
-    const [authors, setAuthors] = useState([]); // Para la lista desplegable de autores (opcional)
+    const [carreras, setCarreras] = useState([]);
+    const [authors, setAuthors] = useState([]); 
 
-    // Simular la carga de carreras y el ID del autor
     useEffect(() => {
-        // En una aplicación real, harías una llamada a tu API para obtener carreras:
-        // axios.get('/api/carreras').then(res => setCarreras(res.data));
-        // Y el autor_id podría venir del token JWT, o ser un campo de selección si hay muchos autores.
-        // Por ahora, simulamos algunos datos:
         setCarreras([
             { id: 1, nombre: 'Software' },
             { id: 2, nombre: 'Mecatrónica' },
             { id: 3, nombre: 'Redes' },
         ]);
-        // Si el autor_id se obtiene del token JWT:
-        // const token = localStorage.getItem('jwtToken');
-        // if (token) {
-        //     const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decodificar el payload JWT
-        //     setEventoData(prev => ({ ...prev, autor_id: decodedToken.userId })); // Asumiendo que tu token tiene 'userId'
-        // } else {
-        //    setEventoData(prev => ({ ...prev, autor_id: 1 })); // Valor por defecto si no hay token
-        // }
-        // Para este ejemplo, usaremos un valor fijo o una selección si tienes muchos autores.
-        setEventoData(prev => ({ ...prev, autor_id: 1 })); // Asignamos un ID de autor por defecto para pruebas
-        setAuthors([ // Para simular una selección de autor si lo necesitas
+        
+        setEventoData(prev => ({ ...prev, autor_id: 1 })); 
+        setAuthors([ 
             { id: 1, nombre: 'Usuario Administrador' },
             { id: 2, nombre: 'Otro Autor' }
         ]);
@@ -77,7 +64,6 @@ function CreateEventoPage() {
 
         let imageUrl = eventoData.imagen;
 
-        // 1. Subir la imagen si hay un archivo seleccionado
         if (file) {
             const formData = new FormData();
             formData.append('file', file); // 'file' debe coincidir con el @RequestParam en tu UploadController
@@ -101,7 +87,6 @@ function CreateEventoPage() {
             }
         }
 
-        // 2. Crear el evento con la URL de la imagen
         try {
             const finalEventoData = { ...eventoData, imagen: imageUrl };
             // Asegúrate de que esta URL sea el endpoint para crear eventos en tu EventoController
@@ -113,10 +98,7 @@ function CreateEventoPage() {
             });
             setSuccess(true);
             console.log('Evento creado exitosamente:', createResponse.data);
-            // Opcional: Limpiar el formulario o redirigir
-            // setEventoData({ ...valores iniciales });
-            // setFile(null);
-            // setPreviewImage(null);
+    
             navigate('/eventos'); // Redirige a la página de listado de eventos
         } catch (err) {
             console.error('Error al crear el evento:', err.response ? err.response.data : err.message);

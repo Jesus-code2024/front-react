@@ -14,7 +14,6 @@ function CreatePublicationPage() {
     const [carreraId, setCarreraId] = useState('');
     const [departamentoId, setDepartamentoId] = useState('');
     
-    // **NUEVOS ESTADOS PARA FECHA Y AUTOR**
     const [fechaPublicacion, setFechaPublicacion] = useState(new Date().toISOString().slice(0, 16)); // Valor por defecto: fecha y hora actual en formato YYYY-MM-DDTHH:MM
     const [autorNombre, setAutorNombre] = useState(''); // Asume que el usuario introduce el nombre
 
@@ -100,7 +99,6 @@ function CreatePublicationPage() {
                     />
                 </Form.Group>
 
-                {/* **NUEVO CAMPO: FECHA DE PUBLICACIÓN** */}
                 <Form.Group className="mb-3" controlId="formFechaPublicacion">
                     <Form.Label>Fecha de Publicación</Form.Label>
                     <Form.Control
