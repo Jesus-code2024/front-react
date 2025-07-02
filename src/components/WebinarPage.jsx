@@ -1,10 +1,12 @@
+// src/components/WebinarsPage.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Table, Alert, InputGroup, FormControl } from 'react-bootstrap';
+import { Container, Row, Col, Table, Alert, InputGroup, FormControl, Button } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
 
-const API_URL_WEBINARS = 'http://localhost:8080/api/webinars';
+const API_URL_WEBINARS = 'http://localhost:8080/api/webinars'; // Asegúrate de que esta sea la URL correcta para tu API de webinars
+const BASE_URL = 'http://localhost:8080'; // Si tus webinars tienen imágenes, asegúrate de que BASE_URL sea correcto
 
 const formatLocalDateTime = (dateTimeString) => {
     if (!dateTimeString) return 'N/A';
@@ -49,16 +51,40 @@ function WebinarsPage() {
         fetchWebinars();
     }, []);
 
+    const handleCreateWebinarClick = () => {
+        navigate('/webinar/new'); // Ruta para crear un nuevo webinar
+    };
+
+    const handleEditClick = (id) => {
+        navigate(`/edit-webinar/${id}`); // Ruta para editar un webinar existente
+    };
+
+    const handleDeleteClick = async (id) => {
+        if (window.confirm('¿Estás seguro de que quieres eliminar este webinar?')) {
+            try {
+                await axios.delete(`${API_URL_WEBINARS}/${id}`, { headers: getAuthHeaders() });
+                alert('Webinar eliminado con éxito.');
+                fetchWebinars(); // Vuelve a cargar la lista de webinars después de eliminar
+            } catch (err) {
+                console.error('Error al eliminar el webinar:', err);
+                if (err.response && err.response.status === 403) {
+                    alert('No tienes permiso para eliminar este webinar (solo el autor puede).');
+                } else {
+                    alert('Hubo un error al eliminar el webinar. Por favor, intente de nuevo.');
+                }
+            }
+        }
+    };
+
     const filteredWebinars = webinars.filter(webinar =>
         webinar.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (webinar.descripcion && webinar.descripcion.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (webinar.expositor && webinar.expositor.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (webinar.enlace && webinar.enlace.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (webinar.autor && webinar.autor.username.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     if (loading) return <p>Cargando webinars...</p>;
-    if (error) return <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>;
+    if (error) return <Alert variant="danger" className="text-center">{error}</Alert>;
 
     return (
         <Container fluid className="webinars-page-container mt-4">
@@ -68,11 +94,11 @@ function WebinarsPage() {
                 </Col>
             </Row>
 
-            <Row className="mb-4">
-                <Col>
+            <Row className="mb-3">
+                <Col md={8}>
                     <InputGroup>
                         <FormControl
-                            placeholder="Buscar por título, descripción, expositor, enlace o autor..."
+                            placeholder="Buscar por título, descripción, expositor o autor..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -80,6 +106,11 @@ function WebinarsPage() {
                             <FaSearch />
                         </InputGroup.Text>
                     </InputGroup>
+                </Col>
+                <Col md={4} className="d-flex justify-content-end">
+                    <Button variant="primary" onClick={handleCreateWebinarClick}>
+                        Crear Webinar
+                    </Button>
                 </Col>
             </Row>
 
@@ -96,6 +127,9 @@ function WebinarsPage() {
                                     <th>Expositor</th>
                                     <th>Enlace</th>
                                     <th>Autor</th>
+                                    {/* Si los webinars tienen imagen, agrega esta columna */}
+                                    {/* <th>Imagen</th> */}
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -113,11 +147,42 @@ function WebinarsPage() {
                                                 ) : 'N/A'}
                                             </td>
                                             <td>{webinar.autor ? webinar.autor.username : 'N/A'}</td>
+                                            {/* Si los webinars tienen imagen, descomenta y adapta esto */}
+                                            {/* <td>
+                                                {webinar.imagen ? (
+                                                    <img
+                                                        src={webinar.imagen.startsWith('http://') || webinar.imagen.startsWith('https://')
+                                                            ? webinar.imagen
+                                                            : `${BASE_URL}${webinar.imagen}`}
+                                                        alt={webinar.titulo || 'Imagen del webinar'}
+                                                        style={{ maxWidth: '100px', maxHeight: '100px', objectFit: 'cover' }}
+                                                    />
+                                                ) : (
+                                                    'No image'
+                                                )}
+                                            </td> */}
+                                            <td>
+                                                <Button
+                                                    variant="warning"
+                                                    size="sm"
+                                                    className="me-2"
+                                                    onClick={() => handleEditClick(webinar.id)}
+                                                >
+                                                    Editar
+                                                </Button>
+                                                <Button
+                                                    variant="danger"
+                                                    size="sm"
+                                                    onClick={() => handleDeleteClick(webinar.id)}
+                                                >
+                                                    Eliminar
+                                                </Button>
+                                            </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="7" className="text-center">No se encontraron webinars.</td>
+                                        <td colSpan="8" className="text-center">No se encontraron webinars.</td> {/* Ajusta colSpan si añades columna de imagen */}
                                     </tr>
                                 )}
                             </tbody>
