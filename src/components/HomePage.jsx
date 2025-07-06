@@ -6,61 +6,67 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/HeroCarousel.css';
 import '../styles/EventCardList.css'; // Asegúrate de que esta ruta sea correcta
 
-// URLs de tu API
 const API_URL_EVENTOS = 'http://localhost:8080/api/eventos';
 const API_URL_WEBINARS = 'http://localhost:8080/api/webinars';
 const API_URL_DESTACADOS = 'http://localhost:8080/api/destacados';
-const BASE_URL = 'http://localhost:8080'; // URL base para construir las rutas de las imágenes
+const BASE_URL = 'http://localhost:8080';
 
-// Función para formatear fechas y horas
+// MODIFICACIÓN CRÍTICA AQUÍ: formatLocalDateTime para incluir Fecha y Hora
 const formatLocalDateTime = (cadenaFechaHora) => {
     if (!cadenaFechaHora) return 'N/A';
     const fecha = new Date(cadenaFechaHora);
-    const opciones = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-    return fecha.toLocaleDateString('es-ES', opciones);
+
+    // Si la fecha no es válida (ej. 'Invalid Date'), devuelve 'N/A'
+    if (isNaN(fecha.getTime())) {
+        return 'N/A';
+    }
+    
+    // Opciones para la fecha (ej: "5 de julio de 2025")
+    const opcionesFecha = { year: 'numeric', month: 'long', day: 'numeric' };
+    const fechaFormateada = fecha.toLocaleDateString('es-ES', opcionesFecha);
+
+    // Opciones para la hora (ej: "01:45 AM"). Añadimos hour12: true si quieres AM/PM
+    const opcionesHora = { hour: '2-digit', minute: '2-digit', hour12: true }; 
+    const horaFormateada = fecha.toLocaleTimeString('es-ES', opcionesHora);
+
+    // Combina la fecha y la hora
+    return `${fechaFormateada}, ${horaFormateada}`;
 };
 
+
 function HomePage() {
-    const [eventosRegulares, setEventosRegulares] = useState([]); // Eventos no destacados para la lista
+    const [eventosRegulares, setEventosRegulares] = useState([]);
     const [webinars, setWebinars] = useState([]);
-    const [elementosDestacados, setElementosDestacados] = useState([]); // Items para el carrusel principal
+    const [elementosDestacados, setElementosDestacados] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
-    const navegar = useNavigate(); // Hook para navegación
+    const navegar = useNavigate();
 
-    // Obtiene los encabezados de autorización si hay un token JWT
     const obtenerCabecerasAuth = () => {
         const token = localStorage.getItem('jwtToken');
         return token ? { Authorization: `Bearer ${token}` } : {};
     };
 
-    // Efecto para cargar los datos al montar el componente
     useEffect(() => {
         const cargarDatos = async () => {
             try {
                 const cabeceras = obtenerCabecerasAuth();
-
-                // Fetch para todos los eventos
-                const respuestaEventos = await axios.get(API_URL_EVENTOS, { headers: cabeceras });
-                // Filtra los eventos no destacados (asumiendo que 'destacado' es 0 o false)
-                const eventosNoDestacados = respuestaEventos.data.filter(evento => evento.destacado === 0 || evento.destacado === false);
+                const eventosRes = await axios.get(API_URL_EVENTOS, { headers: cabeceras });
+                const eventosNoDestacados = eventosRes.data.filter(e => e.destacado === 0 || e.destacado === false);
                 setEventosRegulares(eventosNoDestacados);
 
-                // Fetch para webinars
-                const respuestaWebinars = await axios.get(API_URL_WEBINARS, { headers: cabeceras });
-                setWebinars(respuestaWebinars.data);
+                const webinarsRes = await axios.get(API_URL_WEBINARS, { headers: cabeceras });
+                setWebinars(webinarsRes.data);
+                // console.log("Webinars cargados:", webinarsRes.data); // Puedes descomentar para depurar
 
-                // Fetch para elementos destacados
-                const respuestaDestacados = await axios.get(API_URL_DESTACADOS, { headers: cabeceras });
-                setElementosDestacados(respuestaDestacados.data);
+                const destacadosRes = await axios.get(API_URL_DESTACADOS, { headers: cabeceras });
+                setElementosDestacados(destacadosRes.data);
 
-                setCargando(false); // Finaliza la carga
-            } catch (err) {
-                console.error('Error al cargar datos para la página de inicio:', err);
-                setError('No se pudieron cargar los datos. Por favor, intente de nuevo.');
                 setCargando(false);
-                // Si hay un error de autorización (401), limpia el token y redirige al login
-                if (err.response && err.response.status === 401) {
+            } catch (err) {
+                setError('Error cargando datos.');
+                setCargando(false);
+                if (err.response?.status === 401) {
                     localStorage.removeItem('jwtToken');
                     navegar('/login');
                 }
@@ -68,184 +74,152 @@ function HomePage() {
         };
 
         cargarDatos();
-    }, [navegar]); // Dependencia del hook de navegación
+    }, [navegar]);
 
-    // Si está cargando, muestra un spinner
-    if (cargando) {
-        return (
-            <Container className="text-center mt-5">
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                </Spinner>
-                <p>Cargando eventos y webinars...</p>
-            </Container>
+    // renderizarItemListaEvento: FUNCIÓN PARA EL DISEÑO DE BANNER DE EVENTO
+    const renderizarItemListaEvento = (item) => {
+        const urlImagen = item.imagen
+            ? (item.imagen.startsWith('http://') || item.imagen.startsWith('https://')
+                ? item.imagen
+            : `${BASE_URL}/uploads/${item.imagen}`) // <-- Asegúrate de que esta línea esté correcta
+            : 'https://placehold.co/1200x300/png?text=Banner+Evento';
+
+        const titulo = item.titulo || 'Sin título';
+        const ubicacion = item.ubicacion || 'Ubicación N/A';
+        // CAMBIO CRÍTICO AQUÍ: Usar directamente el resultado de formatLocalDateTime
+        const fechaHoraCompleta = formatLocalDateTime(item.fechaInicio || item.fecha);
+
+         return (
+            <div key={item.id} className="event-banner-card mb-4" style={{ backgroundImage: `url(${urlImagen})` }}>
+                <div className="event-banner-overlay">
+                    <div className="event-banner-content">
+                        <h3 className="event-banner-title">{titulo}</h3>
+                        <p className="event-banner-details">
+                            📍 <strong>{ubicacion}</strong> 
+                            {fechaHoraCompleta !== 'N/A' && <span> | 🗓️ <strong>{fechaHoraCompleta}</strong></span>}
+                        </p>
+                        <Button
+                            variant="primary" 
+                            className="event-banner-button"
+                            // CAMBIO AQUÍ: Navega a /eventos/:id
+                            onClick={() => navegar(`/eventos/${item.id}`)} 
+                        >
+                            Ver Detalles
+                        </Button>
+                    </div>
+                    <div className="event-banner-indicator">+ 26</div> 
+                </div>
+            </div>
         );
-    }
+    };
 
-    // Si hay un error, muestra un mensaje de alerta
-    if (error) {
-        return (
-            <Container className="mt-5">
-                <Alert variant="danger" className="text-center">{error}</Alert>
-            </Container>
-        );
-    }
-
-    // renderizarTarjeta: Función para el diseño de tarjetas en 3 columnas (usado para webinars)
+    // renderizarTarjeta (FUNCIÓN PARA LOS WEBINARS, etc.)
     const renderizarTarjeta = (item, tipo) => {
         const urlImagen = item.imagen
             ? (item.imagen.startsWith('http://') || item.imagen.startsWith('https://')
                 ? item.imagen
-                : `${BASE_URL}${item.imagen}`)
+            : `${BASE_URL}/uploads/${item.imagen}`) // <-- Asegúrate de que esta línea esté correcta
             : 'https://placehold.co/400x200/png?text=No+Imagen'; // Imagen por defecto si no hay
 
         const titulo = item.titulo || 'Sin título';
         const descripcion = item.descripcion || 'Sin descripción';
+        // Usamos la nueva formatLocalDateTime para la fecha completa
         const infoFecha = item.fechaInicio ? formatLocalDateTime(item.fechaInicio) : (item.fecha ? formatLocalDateTime(item.fecha) : 'Fecha N/A');
         const enlace = item.enlace;
 
         return (
             <Col md={4} className="mb-4 d-flex align-items-stretch">
                 <Card className="h-100 shadow-sm" style={{ width: '100%' }}>
-                    <Card.Img variant="top" src={urlImagen} alt={titulo} style={{ height: '200px', objectFit: 'cover' }} />
-                    <Card.Body className="d-flex flex-column">
-                        <Card.Title className="h5">{titulo}</Card.Title>
+                    {/* ... (Card.Img, Card.Body, Card.Title, Card.Text) ... */}
                         <Card.Text className="text-muted">
-                            {`Fecha: ${infoFecha}`}
+                            {`Fecha: ${infoFecha}`} {/* Mostrar la fecha completa aquí */}
                             {tipo === 'evento' && item.ubicacion && ` | Ubicación: ${item.ubicacion}`}
                             {tipo === 'webinar' && item.expositor && ` | Expositor: ${item.expositor}`}
                         </Card.Text>
-                        <Card.Text style={{ flexGrow: 1 }}>
-                            {/* Limita la descripción para la vista de tarjeta */}
-                            {descripcion.length > 100 ? `${descripcion.substring(0, 100)}...` : descripcion}
-                        </Card.Text>
-                        <div className="mt-auto">
-                            {/* Botón para ver webinar si existe el enlace */}
-                            {enlace && tipo === 'webinar' && (
-                                <Button
-                                    variant="outline-primary"
-                                    href={enlace}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="me-2"
-                                >
-                                    Ver Webinar
-                                </Button>
-                            )}
+                    {/* ... (Card.Text descripción) ... */}
+                    <div className="mt-auto">
+                        {/* Botón para ver webinar si existe el enlace */}
+                        {item.enlace && tipo === 'webinar' && ( // Se agregó item.enlace para asegurar que el botón solo aparezca si hay enlace
                             <Button
-                                variant="primary"
-                                onClick={() => navegar(`/${item.fechaInicio ? 'eventos' : 'webinars'}/${item.id}`)}
+                                variant="outline-primary"
+                                href={item.enlace}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="me-2"
                             >
-                                Ver Detalles
+                                Ir al Webinar
                             </Button>
-                        </div>
-                    </Card.Body>
+                        )}
+                        <Button
+                            variant="primary"
+                            // CAMBIO AQUÍ: Navega dinámicamente según el tipo de item
+                            onClick={() => navegar(`/${item.fechaInicio ? 'eventos' : 'webinars'}/${item.id}`)} 
+                        >
+                            Ver Detalles
+                        </Button>
+                    </div>
                 </Card>
             </Col>
         );
     };
 
-    // renderizarItemListaEvento: FUNCIÓN PARA EL DISEÑO DE LISTA VERTICAL DE EVENTOS
-    const renderizarItemListaEvento = (item) => {
-        const urlImagen = item.imagen
-            ? (item.imagen.startsWith('http://') || item.imagen.startsWith('https://')
-                ? item.imagen
-                : `${BASE_URL}${item.imagen}`)
-            : 'https://placehold.co/400x200/png?text=No+Imagen';
 
-        const titulo = item.titulo || 'Sin título';
-        const descripcion = item.descripcion || 'Sin descripción';
-        const infoFecha = item.fechaInicio ? formatLocalDateTime(item.fechaInicio) : (item.fecha ? formatLocalDateTime(item.fecha) : 'Fecha N/A');
+    if (cargando) return (
+        <Container className="text-center mt-5">
+            <Spinner animation="border" />
+            <p>Cargando...</p>
+        </Container>
+    );
 
-        return (
-            <Card key={item.id} className="event-list-card mb-4">
-                <Row className="g-0"> {/* g-0 elimina el espaciado interno de las columnas de Bootstrap */}
-                    {item.imagen && ( // Renderiza la columna de la imagen solo si existe
-                        <Col md={4} className="event-list-img-col">
-                            <Card.Img src={urlImagen} alt={titulo} className="event-list-img" />
-                        </Col>
-                    )}
-                    <Col md={item.imagen ? 8 : 12}> {/* Ocupa 8 columnas si hay imagen, 12 si no */}
-                        <Card.Body className="event-list-body">
-                            <Card.Title className="event-list-title">{titulo}</Card.Title>
-                            <Card.Text className="event-list-text">
-                                Fecha: {infoFecha}<br />
-                                Ubicación: {item.ubicacion || 'N/A'}<br />
-                                {/* Muestra la descripción completa o un resumen aquí */}
-                                {descripcion && <p>{descripcion}</p>}
-                            </Card.Text>
-                            <Button
-                                variant="primary"
-                                className="event-list-button"
-                                onClick={() => navegar(`/eventos/${item.id}`)} // Siempre navega a /eventos para estos items
-                            >
-                                Ver Detalles
-                            </Button>
-                        </Card.Body>
-                    </Col>
-                </Row>
-            </Card>
-        );
-    };
-
+    if (error) return (
+        <Container className="mt-5">
+            <Alert variant="danger">{error}</Alert>
+        </Container>
+    );
 
     return (
         <Container fluid className="home-page-container p-0">
-            {/* Carrusel de Elementos Destacados (Carrusel principal en la parte superior) */}
-            {elementosDestacados.length > 0 && (
-                <Carousel fade className="hero-carousel">
-                    {elementosDestacados.map((item, index) => (
-                        <Carousel.Item key={index}>
-                            <div
-                                className="hero-carousel-item-bg"
-                                style={{
-                                    backgroundImage: `url(${item.imagen
-                                        ? (item.imagen.startsWith('http://') || item.imagen.startsWith('https://')
-                                            ? item.imagen
-                                            : `${BASE_URL}${item.imagen}`)
-                                        : 'https://placehold.co/1920x600/png?text=Imagen+Destacada'
-                                    })`,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                    height: '600px'
-                                }}
-                            >
-                                <Carousel.Caption className="hero-carousel-caption">
-                                    <h3 className="hero-carousel-title">{item.titulo || 'Sin título'}</h3>
-                                    <p className="hero-carousel-description">{item.descripcion || 'Descubre más sobre esto.'}</p>
-                                    <Button
-                                        variant="light"
-                                        className="hero-carousel-button"
-                                        // Ajusta la navegación si los 'destacados' pueden incluir webinars
-                                        onClick={() => navegar(`/${item.fechaInicio ? 'eventos' : 'webinars'}/${item.id}`)}
-                                    >
-                                        Ver Detalles
-                                    </Button>
-                                </Carousel.Caption>
-                            </div>
-                        </Carousel.Item>
-                    ))}
-                </Carousel>
-            )}
+            {/* Destacados */}
+            <Carousel fade className="hero-carousel">
+                {elementosDestacados.map((item, index) => (
+                    <Carousel.Item key={index}>
+                        <div
+                            className="hero-carousel-item-bg"
+                            style={{
+        backgroundImage: `url(${item.imagen?.startsWith('http') ? item.imagen : BASE_URL + '/uploads/' + item.imagen})`, // <--- Asegúrate de que aquí sea '/uploads/'
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                height: '600px'
+                            }}
+                        >
+                            <Carousel.Caption className="hero-carousel-caption">
+                                <h3 className="hero-carousel-title">{item.titulo}</h3>
+                                <p className="hero-carousel-description">{item.descripcion}</p>
+                                <Button
+                                    variant="light"
+                                    className="hero-carousel-button"
+onClick={() => navegar(`/${item.tipo}s/${item.id}`)}                                >
+                                    Ver Detalles
+                                </Button>
+                            </Carousel.Caption>
+                        </div>
+                    </Carousel.Item>
+                ))}
+            </Carousel>
 
-            {/* SECCIÓN DE PRÓXIMOS EVENTOS (LISTA VERTICAL) */}
+            {/* Lista de eventos (Próximos Eventos) */}
             <Container className="mt-5">
                 <h2 className="text-center mb-4">Próximos Eventos</h2>
-                <div className="event-list-container"> {/* Contenedor para la lista de eventos */}
-                    {eventosRegulares.length > 0 ? (
-                        // Mapea los eventos regulares usando la función de renderizado de lista
-                        eventosRegulares.map(evento => renderizarItemListaEvento(evento)) // <--- ¡Esto es lo crucial!
+                <div className="event-list-container">
+                    {eventosRegulares.length > 0 ? ( 
+                        eventosRegulares.map(renderizarItemListaEvento)
                     ) : (
-                        <Row>
-                            <Col className="text-center">
-                                <Alert variant="info">No hay eventos disponibles en este momento.</Alert>
-                            </Col>
-                        </Row>
+                        <Row><Col className="text-center"><Alert variant="info">No hay eventos disponibles.</Alert></Col></Row>
                     )}
                 </div>
             </Container>
 
-            {/* SECCIÓN DE ÚLTIMOS WEBINARS (CARRUSEL DE 3 COLUMNAS - se mantiene el diseño original) */}
+            {/* SECCIÓN DE ÚLTIMOS WEBINARS (CARRUSEL DE 3 COLUMNAS - REINTRODUCIDA) */}
             <Container className="mt-5">
                 <h2 className="text-center mb-4">Últimos Webinars</h2>
                 {webinars.length > 0 ? (

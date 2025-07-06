@@ -23,6 +23,7 @@ import EditEventoPage from './components/EditEventoPage';
 import CreateWebinarPage from './components/CreateWebinarPage';
 import EditWebinarPage from './components/EditWebinarPage';
 import Footer from './components/Footer'; 
+import DetalleItemPage from './components/DetalleItemPage';
 
 
 const OAuth2RedirectHandler = () => {
@@ -142,6 +143,8 @@ function App() {
           <Route path="/edit-evento/:id" element={<EditEventoPage />} />
           <Route path="/webinar/new" element={<CreateWebinarPage />} />
           <Route path="/edit-webinar/:id" element={<EditWebinarPage />} />
+          <Route path="/eventos/:id" element={<DetalleItemPage />} />
+          <Route path="/webinars/:id" element={<DetalleItemPage />} />
 
 
 

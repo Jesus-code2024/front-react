@@ -5,131 +5,275 @@
     padding: 20px 0; /* Espaciado superior e inferior */
 }
 
-/* Estilos para cada tarjeta de evento en la lista */
+/* ---------------------------------------------------- */
+/* --- ESTILOS PARA LAS TARJETAS TIPO BANNER (NUEVOS) --- */
+/* ---------------------------------------------------- */
+
+/* Estilos para el contenedor del banner del evento */
+.event-banner-card {
+    background-size: cover;
+    background-position: center;
+    color: white; /* Color del texto por defecto sobre la imagen */
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative; /* Para posicionar la superposición y el indicador */
+    height: 200px; /* Altura fija para el banner. Ajusta si es necesario. */
+    display: flex;
+    align-items: center; /* Centra verticalmente el contenido de la superposición */
+    margin-bottom: 20px; /* Espacio entre banners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+}
+
+/* Superposición semitransparente para mejorar la legibilidad del texto */
+.event-banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente (ajusta la opacidad) */
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Espacio entre el contenido y el indicador/logo */
+    padding: 20px 30px; /* Más padding para que el contenido no esté pegado a los bordes */
+}
+
+/* Contenido principal del banner (título, detalles, botón) */
+.event-banner-content {
+    flex-grow: 1; /* Ocupa la mayor parte del espacio a la izquierda */
+    max-width: 70%; /* Limita el ancho del texto para que no se extienda demasiado */
+    z-index: 1; /* Asegura que el contenido esté por encima de la superposición */
+}
+
+/* Título del evento en el banner */
+.event-banner-title {
+    font-size: 2.2rem; /* Tamaño de fuente grande para el título */
+    font-weight: 700; /* Más negrita */
+    margin-bottom: 8px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Sombra de texto para mejorar la legibilidad */
+    line-height: 1.2;
+}
+
+/* Detalles del evento (ubicación, hora) */
+.event-banner-details {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.event-banner-details strong {
+    font-weight: 700;
+    margin-right: 5px; /* Espacio entre el icono y el texto */
+}
+
+.event-banner-details span {
+    margin-left: 15px; /* Espacio entre ubicación y hora */
+}
+
+/* Botón "Ver Detalles" (anteriormente "BUY") */
+.event-banner-button {
+    background-color: #8a2be2; /* Un color morado similar al del ejemplo */
+    border-color: #8a2be2;
+    color: white;
+    font-size: 1.1rem;
+    padding: 12px 25px; /* Ajustado ligeramente el padding si 'Ver Detalles' es más largo */
+    border-radius: 5px;
+    text-transform: uppercase; /* Texto en mayúsculas */
+    font-weight: bold;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.event-banner-button:hover {
+    background-color: #6a0dad; /* Morado más oscuro al pasar el ratón */
+    border-color: #6a0dad;
+    transform: translateY(-2px); /* Pequeño efecto al pasar el ratón */
+}
+
+/* Indicador de la esquina (+ 26) */
+.event-banner-indicator {
+    position: absolute; /* Posicionamiento absoluto relativo al .event-banner-card */
+    top: 20px; /* Distancia desde la parte superior */
+    right: 30px; /* Distancia desde la derecha */
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente */
+    color: white;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    z-index: 2; /* Asegura que esté por encima de la superposición */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px; /* Ancho mínimo para que no se vea comprimido */
+    height: 40px; /* Altura para que sea cuadrado o rectangular sutil */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Borde sutil */
+}
+
+/* ---------------------------------------------------- */
+/* -- ESTILOS PARA LAS TARJETAS DE 3 COLUMNAS (EXISTENTES) -- */
+/* ---------------------------------------------------- */
+
+/* NOTA: He mantenido esta sección comentada como en tu archivo anterior.
+         Si la necesitas para otros componentes, descoméntala.
+*/
+/*
 .event-list-card {
-    border: 1px solid #ddd; /* Borde suave */
-    border-radius: 8px; /* Bordes ligeramente redondeados */
-    overflow: hidden; /* Asegura que el contenido interno no sobresalga */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Sombra para darle más profundidad */
-    margin-bottom: 25px; /* Más espacio entre cada tarjeta */
-    width: 100% !important; /* La tarjeta ocupa todo el ancho disponible - ¡Importante para forzar! */
-    display: flex !important; /* Convierte la tarjeta en un contenedor flex para su contenido interno - ¡Importante para forzar! */
-    flex-direction: row !important; /* Por defecto, los elementos se distribuyen en fila - ¡Importante para forzar! */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    margin-bottom: 25px;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: row !important;
 }
 
-/* Ajuste para la Row dentro de la Card para asegurar el layout de columnas */
 .event-list-card > .row {
-    width: 100% !important; /* Asegura que la fila interna ocupe todo el ancho de la tarjeta - ¡Importante! */
-    margin-left: 0 !important; /* Elimina márgenes negativos de Bootstrap si existen - ¡Importante! */
-    margin-right: 0 !important; /* Elimina márgenes negativos de Bootstrap si existen - ¡Importante! */
-    display: flex !important; /* Fuerza el comportamiento flexbox en la fila - ¡Importante! */
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    display: flex !important;
 }
 
-/* Columna que contiene la imagen de la tarjeta de lista */
 .event-list-img-col {
-    padding: 0 !important; /* Elimina cualquier padding predeterminado de Col - ¡Importante! */
+    padding: 0 !important;
     display: flex !important;
-    align-items: center !important; /* Centra la imagen verticalmente si el aspecto no es exacto - ¡Importante! */
+    align-items: center !important;
     justify-content: center !important;
-    overflow: hidden; /* Para manejar si la imagen es más grande */
-    /* Ancho de la columna para la imagen. Bootstrap md={4} se traduce a width: 33.333% */
-    /* Si Bootstrap está funcionando correctamente, este ancho no debería ser necesario aquí */
-    /* width: 33.333% !important; */
+    overflow: hidden;
 }
 
-/* Imagen dentro de la tarjeta de lista */
 .event-list-img {
-    width: 100% !important; /* Ocupa el 100% del ancho de su columna - ¡Importante para forzar! */
-    height: 200px !important; /* Altura fija para la imagen - ¡Importante para forzar! */
-    object-fit: cover !important; /* Recorta la imagen para cubrir el área sin distorsión - ¡Importante! */
-    border-radius: 8px 0 0 8px; /* Bordes redondeados solo a la izquierda */
+    width: 100% !important;
+    height: 200px !important;
+    object-fit: cover !important;
+    border-radius: 8px 0 0 8px;
 }
 
-/* Cuerpo de la tarjeta de lista (donde está el texto y botones) */
 .event-list-body {
-    padding: 20px !important; /* Espaciado interno - ¡Importante! */
+    padding: 20px !important;
     display: flex !important;
-    flex-direction: column !important; /* Organiza el contenido en columna - ¡Importante! */
-    justify-content: space-between !important; /* Distribuye espacio entre elementos: título, texto, botón - ¡Importante! */
-    flex-grow: 1 !important; /* Permite que el cuerpo ocupe el espacio restante - ¡Importante! */
-    /* Ancho de la columna para el texto. Bootstrap md={8} se traduce a width: 66.666% */
-    /* Si Bootstrap está funcionando correctamente, este ancho no debería ser necesario aquí */
-    /* width: 66.666% !important; */
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    flex-grow: 1 !important;
 }
 
-/* Título del evento en la tarjeta de lista */
 .event-list-title {
-    font-size: 1.8rem; /* Tamaño de fuente más grande para el título */
+    font-size: 1.8rem;
     font-weight: bold;
     margin-bottom: 10px;
-    color: #333; /* Un color más oscuro para el título */
+    color: #333;
 }
 
-/* Texto de descripción y detalles en la tarjeta de lista */
 .event-list-text {
     font-size: 1rem;
     color: #555;
     margin-bottom: 15px;
-    line-height: 1.6; /* Espaciado de línea para mejor legibilidad */
-    flex-grow: 1; /* Permite que el texto ocupe el espacio disponible antes del botón */
-    overflow: hidden; /* Oculta contenido que se desborda */
-    text-overflow: ellipsis; /* Añade puntos suspensivos si el texto es muy largo */
-    display: -webkit-box; /* Propiedades para limitar líneas en navegadores WebKit */
-    -webkit-line-clamp: 3; /* Limita el texto a 3 líneas, ajusta si es necesario */
+    line-height: 1.6;
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
 }
 
-/* Botón "Ver Detalles" en la tarjeta de lista */
 .event-list-button {
-    background-color: #007bff; /* Color azul primario */
+    background-color: #007bff;
     border-color: #007bff;
     color: white;
     border-radius: 5px;
     padding: 10px 20px;
     font-size: 1rem;
-    transition: background-color 0.3s ease, border-color 0.3s ease; /* Transición suave al pasar el ratón */
-    align-self: flex-start; /* Alinea el botón a la izquierda dentro del cuerpo de la tarjeta */
-    margin-top: 10px; /* Pequeño espacio superior para separar del texto */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    align-self: flex-start;
+    margin-top: 10px;
 }
 
 .event-list-button:hover {
-    background-color: #0056b3; /* Color más oscuro al pasar el ratón */
+    background-color: #0056b3;
     border-color: #0056b3;
 }
+*/
 
 /* Media queries para adaptar el diseño en pantallas más pequeñas (móviles) */
 @media (max-width: 767.98px) {
+    .event-banner-card {
+        height: 150px; /* Altura un poco menor en móviles */
+    }
+
+    .event-banner-overlay {
+        padding: 15px 20px; /* Ajusta el padding en móviles */
+        flex-direction: column; /* Apila el contenido verticalmente en móviles */
+        align-items: flex-start; /* Alinea el contenido a la izquierda */
+        justify-content: center;
+    }
+
+    .event-banner-content {
+        max-width: 100%; /* Ocupa todo el ancho disponible */
+        margin-bottom: 10px; /* Espacio debajo del contenido antes del botón */
+    }
+
+    .event-banner-title {
+        font-size: 1.5rem; /* Título más pequeño en móviles */
+    }
+
+    .event-banner-details {
+        font-size: 1rem; /* Detalles más pequeños en móviles */
+        margin-bottom: 10px;
+    }
+
+    .event-banner-button {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        align-self: flex-start; /* Asegura que el botón se alinee a la izquierda */
+    }
+
+    .event-banner-indicator {
+        top: 15px;
+        right: 15px;
+        font-size: 0.8rem;
+        padding: 4px 7px;
+        min-width: 30px;
+        height: 30px;
+    }
+
+    /* Si mantienes los estilos de .event-list-card para otros componentes, también ajústalos aquí */
+    /*
     .event-list-card {
-        flex-direction: column !important; /* En pantallas pequeñas, la tarjeta se apila verticalmente - ¡Importante! */
+        flex-direction: column !important;
     }
 
     .event-list-img-col {
-        width: 100% !important; /* La columna de la imagen ocupa todo el ancho - ¡Importante! */
+        width: 100% !important;
         height: auto !important;
     }
 
     .event-list-img {
-        width: 100% !important; /* La imagen ocupa todo el ancho de la columna - ¡Importante! */
-        height: 180px !important; /* Altura más pequeña para imágenes en móviles - ¡Importante! */
-        border-radius: 8px 8px 0 0 !important; /* Bordes redondeados en la parte superior - ¡Importante! */
+        width: 100% !important;
+        height: 180px !important;
+        border-radius: 8px 8px 0 0 !important;
     }
 
     .event-list-body {
-        padding: 15px !important; /* Ajusta el padding en móviles - ¡Importante! */
+        padding: 15px !important;
     }
 
     .event-list-title {
-        font-size: 1.5rem !important; /* Título más pequeño en móviles - ¡Importante! */
+        font-size: 1.5rem !important;
     }
 
     .event-list-text {
-        font-size: 0.9rem !important; /* Texto más pequeño en móviles - ¡Importante! */
-        -webkit-line-clamp: 4 !important; /* Podrías permitir más líneas en móviles si es necesario - ¡Importante! */
+        font-size: 0.9rem !important;
+        -webkit-line-clamp: 4 !important;
     }
 
     .event-list-button {
-        width: 100% !important; /* Botón ocupa todo el ancho en móviles - ¡Importante! */
+        width: 100% !important;
         text-align: center !important;
-        align-self: center !important; /* Centra el botón en móviles - ¡Importante! */
+        align-self: center !important;
     }
+    */
 }

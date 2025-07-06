@@ -76,7 +76,7 @@ function CreateEventoPage() {
                         'Authorization': `Bearer ${localStorage.getItem('jwtToken')}` // Envía el token JWT
                     }
                 });
-                imageUrl = BASE_URL + uploadResponse.data;
+                imageUrl = uploadResponse.data;
                 setEventoData(prev => ({ ...prev, imagen: imageUrl }));
                 console.log('Imagen subida exitosamente:', imageUrl);
             } catch (err) {

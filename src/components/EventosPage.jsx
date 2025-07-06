@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Table, Alert, InputGroup, FormControl, Button } from 'react-bootstrap'; // Importa Button
+import { Container, Row, Col, Alert, InputGroup, FormControl, Card } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
+import '../styles/EventosPage.css';
 
 const API_URL_EVENTOS = 'http://localhost:8080/api/eventos';
 const BASE_URL = 'http://localhost:8080';
@@ -50,36 +51,16 @@ function EventosPage() {
         fetchEventos();
     }, []);
 
-    const handleCreateEventClick = () => {
-        navigate('/evento/new'); 
-    };
-
-    const handleEditClick = (id) => {
-        navigate(`/edit-evento/${id}`); 
-    };
-
-    const handleDeleteClick = async (id) => {
-        if (window.confirm('¿Estás seguro de que quieres eliminar este evento?')) {
-            try {
-                await axios.delete(`${API_URL_EVENTOS}/${id}`, { headers: getAuthHeaders() });
-                alert('Evento eliminado con éxito.');
-                fetchEventos(); // Vuelve a cargar la lista de eventos después de eliminar
-            } catch (err) {
-                console.error('Error al eliminar el evento:', err);
-                if (err.response && err.response.status === 403) {
-                    alert('No tienes permiso para eliminar este evento (solo el autor puede).');
-                } else {
-                    alert('Hubo un error al eliminar el evento. Por favor, intente de nuevo.');
-                }
-            }
-        }
+    const handleViewDetailsClick = (id) => {
+        navigate(`/eventos/${id}`);
     };
 
     const filteredEventos = eventos.filter(evento =>
         evento.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (evento.descripcion && evento.descripcion.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (evento.ubicacion && evento.ubicacion.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (evento.autor && evento.autor.username.toLowerCase().includes(searchTerm.toLowerCase()))
+        (evento.autor && evento.autor.username.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (evento.carrera && evento.carrera.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     if (loading) return <p>Cargando eventos...</p>;
@@ -93,11 +74,11 @@ function EventosPage() {
                 </Col>
             </Row>
 
-            <Row className="mb-3"> {/* Contenedor para el buscador y el botón */}
-                <Col md={8}> {/* Columna para el buscador */}
+            <Row className="mb-3">
+                <Col md={12}>
                     <InputGroup>
                         <FormControl
-                            placeholder="Buscar por título, descripción, ubicación o autor..."
+                            placeholder="Buscar por título, descripción, ubicación, autor o carrera..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -106,86 +87,42 @@ function EventosPage() {
                         </InputGroup.Text>
                     </InputGroup>
                 </Col>
-                <Col md={4} className="d-flex justify-content-end"> {/* Columna para el botón "Crear Evento" */}
-                    <Button variant="primary" onClick={handleCreateEventClick}>
-                        Crear Evento
-                    </Button>
-                </Col>
             </Row>
 
-            <Row>
-                <Col>
-                    <div className="table-responsive">
-                        <Table striped bordered hover className="eventos-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Título</th>
-                                    <th>Descripción</th>
-                                    <th>Fecha Inicio</th>
-                                    <th>Fecha Fin</th>
-                                    <th>Ubicación</th>
-                                    <th>Capacidad</th>
-                                    <th>Autor</th>
-                                    <th>Imagen</th>
-                                    <th>Acciones</th> {/* Nueva columna para Editar/Eliminar */}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredEventos.length > 0 ? (
-                                    filteredEventos.map((evento) => (
-                                        <tr key={evento.id}>
-                                            <td>{evento.id}</td>
-                                            <td>{evento.titulo}</td>
-                                            <td>{evento.descripcion}</td>
-                                            <td>{formatLocalDateTime(evento.fecha_inicio || evento.fechaInicio)}</td>
-                                            <td>{formatLocalDateTime(evento.fecha_fin || evento.fechaFin)}</td>
-                                            <td>{evento.ubicacion || 'N/A'}</td>
-                                            <td>{evento.capacidad || 'N/A'}</td>
-                                            <td>{evento.autor ? evento.autor.username : 'N/A'}</td>
-                                            <td>
-                                                {evento.imagen ? (
-                                                    <img
-                                                        src={evento.imagen.startsWith('http://') || evento.imagen.startsWith('https://')
-                                                            ? evento.imagen
-                                                            : `${BASE_URL}${evento.imagen}`}
-                                                        alt={evento.titulo || 'Imagen del evento'}
-                                                        style={{ maxWidth: '100px', maxHeight: '100px', objectFit: 'cover' }}
-                                                    />
-                                                ) : (
-                                                    'No image'
-                                                )}
-                                            </td>
-                                            <td>
-                                                {/* Botones de Editar y Eliminar */}
-                                                <Button
-                                                    variant="warning"
-                                                    size="sm"
-                                                    className="me-2" // Margen a la derecha
-                                                    onClick={() => handleEditClick(evento.id)}
-                                                >
-                                                    Editar
-                                                </Button>
-                                                <Button
-                                                    variant="danger"
-                                                    size="sm"
-                                                    onClick={() => handleDeleteClick(evento.id)}
-                                                >
-                                                    Eliminar
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="10" className="text-center">No se encontraron eventos.</td> {/* colSpan ajustado a 10 */}
-                                    </tr>
-                                )}
-                            </tbody>
-                        </Table>
-                    </div>
-                </Col>
-            </Row>
+            {filteredEventos.length > 0 ? (
+                <Row xs={1} sm={2} md={3} lg={4} xl={5} className="g-4 event-cards-grid">
+                    {filteredEventos.map((evento) => (
+                        <Col key={evento.id}>
+                            <Card className="event-card" onClick={() => handleViewDetailsClick(evento.id)}>
+                                <div className="event-card-image-container">
+                                    {evento.imagen ? (
+                                        <Card.Img
+                                            variant="top"
+                                            src={`${BASE_URL}/uploads/${evento.imagen}`}
+                                            alt={evento.titulo || 'Imagen del evento'}
+                                            className="event-image"
+                                        />
+                                    ) : (
+                                        <div className="no-image-placeholder">No Image</div>
+                                    )}
+                                    {evento.carrera && (
+                                        <div className="event-career-overlay">
+                                            {evento.carrera.nombre}
+                                        </div>
+                                    )}
+                                </div>
+                                <Card.Body className="event-card-body">
+                                    <Card.Title className="event-title-overlay">{evento.titulo}</Card.Title>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    ))}
+                </Row>
+            ) : (
+                <Alert variant="info" className="mt-4 text-center">
+                    No se encontraron eventos que coincidan con la búsqueda.
+                </Alert>
+            )}
         </Container>
     );
 }
