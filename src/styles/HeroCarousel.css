@@ -1,0 +1,197 @@
+/* src/styles/HeroCarousel.css */
+
+/* Contenedor principal del carrusel, ocupa todo el ancho */
+.hero-carousel {
+    width: 100%; /* Asegura que el carrusel ocupe el 100% del ancho de su contenedor */
+    height: 600px; /* Altura fija para el carrusel principal */
+    overflow: hidden; /* Asegura que no haya desbordamiento */
+    position: relative; /* Para posicionar el contenido dentro */
+}
+
+/* El carousel-inner es generado por react-bootstrap. Aseguramos que ocupe todo el espacio. */
+.hero-carousel .carousel-inner {
+    width: 100%; /* Asegura que el contenedor interno de los slides ocupe el ancho */
+    height: 100%; /* Asegura que ocupe la altura del .hero-carousel */
+}
+
+/* Cada item del carrusel (generado por Carousel.Item de react-bootstrap) */
+.hero-carousel .carousel-item {
+    width: 100%; /* Asegura que cada slide ocupe el ancho */
+    height: 100%; /* Asegura que cada slide ocupe la altura del .carousel-inner */
+    overflow: hidden; /* Recorta cualquier contenido que exceda los límites */
+}
+
+/* Fondo de cada item del carrusel */
+.hero-carousel-item-bg {
+    width: 100%;
+    height: 100%;
+    background-size: cover; /* Cubre todo el área */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    display: flex; /* <-- Importante: Esto convierte este contenedor en un flex container */
+    align-items: center; /* <-- Importante: Centra verticalmente el flex item (el caption) */
+    justify-content: center; /* <-- Importante: Centra horizontalmente el flex item (el caption) */
+    position: relative; /* Necesario para el overlay */
+}
+
+/* Overlay oscuro para mejorar la legibilidad del texto */
+.hero-carousel-item-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Sombra oscura del 50% */
+}
+
+/* Estilos para el texto de la leyenda del carrusel */
+.hero-carousel-caption {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center; /* <--- ESTA ES LA PROPIEDAD CLAVE: Centra horizontalmente el texto y los elementos inline/inline-block dentro de este div. */
+    padding: 20px;
+    max-width: 800px; /* Ancho máximo para el texto */
+    
+    /* ELIMINA LAS SIGUIENTES LÍNEAS SI ESTÁN PRESENTES EN TU CÓDIGO.
+       Son las que causaban conflicto con el centrado flexbox del padre. */
+    /* left: 50%; */
+    /* transform: translateX(-50%); */
+    /* width: 100%; */
+    /* margin-left: auto; */
+    /* margin-right: auto; */
+}
+
+.hero-carousel-title {
+    font-size: 3.5rem; /* Tamaño de la fuente del título */
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Sombra para el texto */
+}
+
+.hero-carousel-description {
+    font-size: 1.5rem; /* Tamaño de la fuente de la descripción */
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Sombra para el texto */
+}
+
+.hero-carousel-button {
+    font-size: 1.2rem;
+    padding: 10px 30px;
+    border-radius: 50px; /* Botones redondeados */
+    background-color: #007bff; /* Color de fondo del botón (azul de Bootstrap) */
+    border-color: #007bff; /* Color del borde del botón */
+    color: white; /* Color del texto del botón */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.hero-carousel-button:hover {
+    background-color: #0056b3; /* Color de fondo al pasar el ratón */
+    border-color: #0056b3; /* Color del borde al pasar el ratón */
+    color: white;
+}
+
+/* Ajustes para el tamaño del carrusel en pantallas más pequeñas */
+@media (max-width: 768px) {
+    .hero-carousel {
+        height: 400px; /* Menor altura en móviles */
+    }
+
+    .hero-carousel-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-carousel-description {
+        font-size: 1.2rem;
+    }
+
+    .hero-carousel-button {
+        font-size: 1rem;
+        padding: 8px 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-carousel-title {
+        font-size: 2rem;
+    }
+
+    .hero-carousel-description {
+        font-size: 1rem;
+    }
+}
+
+/* Estilos de las flechas de navegación del carrusel */
+.hero-carousel .carousel-control-prev-icon,
+.hero-carousel .carousel-control-next-icon {
+    width: 30px; /* Ajusta el tamaño del icono */
+    height: 30px;
+    background-size: 100%, 100%; /* Asegura que el SVG del icono se ajuste */
+    background-color: rgba(0, 0, 0, 0.3); /* Fondo semitransparente para las flechas */
+    border-radius: 50%; /* Flechas redondas */
+    padding: 5px; /* Espaciado dentro de la flecha */
+}
+
+.hero-carousel .carousel-control-prev,
+.hero-carousel .carousel-control-next {
+    width: 5%; /* Ajusta el ancho del área de clic de la flecha */
+}
+
+/* Indicadores del carrusel */
+.hero-carousel .carousel-indicators button {
+    background-color: white; /* Puntos blancos */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Borde ligero */
+    margin: 0 5px; /* Espaciado entre puntos */
+    width: 10px; /* Tamaño del punto */
+    height: 10px;
+    border-radius: 50%; /* Redondeado */
+    opacity: 0.7; /* Transparencia normal */
+    transition: opacity 0.3s ease;
+}
+
+.hero-carousel .carousel-indicators .active {
+    background-color: #007bff; /* Color del punto activo */
+    opacity: 1; /* Opacidad completa para el activo */
+}
+
+/* Estilos para el carrusel de tarjetas (eventos/webinars) */
+.custom-carousel .carousel-item {
+    padding: 0 15px; /* Espaciado a los lados */
+}
+
+.custom-carousel .carousel-control-prev,
+.custom-carousel .carousel-control-next {
+    width: 5%;
+    background: none; /* Sin fondo en las flechas */
+}
+
+.custom-carousel .carousel-control-prev-icon,
+.custom-carousel .carousel-control-next-icon {
+    filter: invert(100%); /* Hace los iconos blancos para mejor contraste */
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente para las flechas */
+    border-radius: 50%;
+    padding: 5px;
+}
+
+/* Ajustes para asegurar que las tarjetas se vean bien */
+.card-deck .card {
+    margin-bottom: 15px; /* Espacio entre tarjetas */
+}
+
+/* Agregado en el paso anterior para eliminar el espacio lateral */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+.home-page-container.container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: 100vw !important;
+}

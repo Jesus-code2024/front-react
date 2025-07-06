@@ -1,0 +1,79 @@
+/* Estilos para la barra de navegación principal */
+.main-navbar-custom {
+    background-color: #000000 !important;
+    padding: 2.5rem 3rem; /* MÁS padding para hacerla MÁS alta */
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.5);
+}
+
+/* LOGO */
+.main-navbar-custom .navbar-logo {
+    height: 65px; /* Más grande el logo 🖼️ */
+}
+
+/* TEXTO del logo */
+.main-navbar-custom .navbar-brand-text {
+    font-weight: bold;
+    font-size: 2rem; /* ¡MUCHO más grande! 💥 */
+    color: rgb(1, 182, 236);
+    margin-left: 15px;
+}
+
+/* Enlaces */
+.main-navbar-custom .navbar-nav .nav-link {
+    font-size: 1.2rem; /* Más grande aún 👀 */
+    font-weight: 600;
+    margin-right: 25px;
+    color: whitesmoke
+}
+
+/* Hover */
+.main-navbar-custom .navbar-nav .nav-link:hover,
+.main-navbar-custom .navbar-nav .nav-link.active {
+    transform: translateY(-3px); /* Más elevado el efecto ✨ */
+}
+
+/* Botón "Crear Evento" */
+.main-navbar-custom .nav-button-create-event {
+    padding: 0.7rem 1.5rem;
+    font-size: 1.1rem;
+}
+
+/* Email */
+.main-navbar-custom .user-email-text {
+    font-size: 1.1rem;
+}
+
+/* Botón Cerrar Sesión */
+.main-navbar-custom .btn-danger {
+    padding: 0.7rem 1.5rem;
+    font-size: 1.1rem;
+}
+
+/* 📱 Media Query para móviles */
+@media (max-width: 991.98px) {
+    .main-navbar-custom {
+        padding: 1.2rem 1.5rem;
+    }
+
+    .main-navbar-custom .navbar-logo {
+        height: 45px;
+    }
+
+    .main-navbar-custom .navbar-brand-text {
+        font-size: 1.8rem;
+    }
+
+    .main-navbar-custom .navbar-nav .nav-link {
+        font-size: 1.05rem;
+    }
+
+    .main-navbar-custom .nav-button-create-event,
+    .main-navbar-custom .btn-danger {
+        font-size: 1.05rem;
+        padding: 0.6rem 1.2rem;
+    }
+
+    .main-navbar-custom .user-email-text {
+        font-size: 1rem;
+    }
+}
